@@ -1,0 +1,272 @@
+#define DATA_OFFSET 10
+WiFiServer phpserver(8080);
+ESP8266WebServer server(80);
+byte WIFIDIR = 0; int estado=0;byte BOTSDIR=50;
+////////////////////////////////XMLEND//////////////////////////////////////////////////////////////////////////
+////////////////////////////////XMLEND//////////////////////////////////////////////////////////////////////////
+void xmlend(char xmlchar[]) { /*SE REPITE EN TODOS LAS FUNCIONES XML*/
+  String xmlstring;
+  for (int i = 0; i < strlen(xmlchar) ; i++) {xmlstring += xmlchar[i];}
+  String XML = "<?xml version='1.0'?><data id='respxml'>"; XML += xmlstring; XML += "</data>";
+  server.send(200, "text/xml", XML);
+}
+////////////////////////////////PLAINSUBSTRING//////////////////////////////////////////////////////////////////////////
+////////////////////////////////PLAINSUBSTRING//////////////////////////////////////////////////////////////////////////
+String * plainsubstring(String fullstring) { /*DIVIDE STRING RECIBIDO DE POST EN SUBSTRING EN FUNCION DE UN CARACTER DETERMINADO*/
+  byte pos[20]; byte wexit = 0; String next[20]; String * postarg = new String[20];byte q= 0; String sub[20];
+  next[0] = fullstring;
+  do{
+    pos[q] = next[q].indexOf("?", q);
+    if (pos[q] != -1) {sub[q] = next[q].substring(0, pos[q]);
+    if ((sub[q].indexOf(":", 0)) > 0) {postarg[q] = sub[q].substring(sub[q].indexOf(":", 0) + 1, sub[q].length());}else{postarg[q] = sub[q];}
+    next[q + 1] = next[q].substring(pos[q] + 1, next[q].length());
+    q++;
+    }else{wexit = 1;}
+  }while(wexit == 0);
+  return postarg;
+}
+/////////////////////////PHPREQUEST/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////PHPREQUEST/////////////////////////////////////////////////////////////////////////////////////////////////////
+char * phprequest(String Header,String data){
+  char phpresponse[600];
+  char espserver[] = "http://casabots.000webhostapp.com";
+  WiFiClient espClient=phpserver.available();
+  if(espClient.connect(espserver,80)){
+    HTTPClient http;
+    http.begin(espserver+Header);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
+    byte httpCode = http.POST(data);
+    String phppayload = http.getString();
+    phppayload.toCharArray(phpresponse,phppayload.length()+1);
+    Serial.println(F(String(Header)+" HttpCode: "+String(httpCode)));
+    http.end();
+  }else{strcpy(phpresponse,"Error de Conexion con Servidor PHP. Contacte Proveedor.");}
+  return phpresponse;
+}
+////////////////////////////////HTMLXML//////////////////////////////////////////////////////////////////////////
+////////////////////////////////HTMLXML//////////////////////////////////////////////////////////////////////////
+void htmlsendxml() {
+  //POST= strtopic:strtopic?
+  char xmlresponse[150];
+  String * args2 = plainsubstring(server.arg("plain"));
+  String temp = mqttpublish(args2[0]);
+  temp.toCharArray(xmlresponse,temp.length()+1);
+  xmlend(xmlresponse);
+}
+void htmlreceivexml(){xmlend(MQTTCALLBACK);}
+////////////////////////////////PENDIENTE//////////////////////////////////////////////////////////////////////////
+////////////////////////////////PENDIENTE//////////////////////////////////////////////////////////////////////////
+void htmlprogamaeliminarxml(){
+  //POST= progamaeliminar:progamaeliminar
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "USER="+String(readChar(BOTSDIR))+"&progamaeliminar="+String(args2[0])+"";
+  char xmlresponse[150]; strcpy(xmlresponse, phprequest("/progamaeliminar.php",data));
+  Serial.println(F("Eliminar Programa: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+void htmlnuevoprogramaxml(){
+  //POST= estado:estado,programid:programid,nombreprograma:nombreprograma,days:days,horainicio:horainicio,horafin:horafin,devi:devi
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "USER="+String(readChar(BOTSDIR))+"&estado="+String(args2[0])+"&programid="+String(args2[1])+"&nombreprograma="+String(args2[2])+"&days="+String(args2[3])+"&horainicio="+String(args2[4])+"&horafin="+String(args2[5])+"&devi="+String(args2[6])+"";
+  char xmlresponse[150]; strcpy(xmlresponse, phprequest("/nuevoprograma.php",data));
+  Serial.println(F("Nuevo Programa: " + String(xmlresponse)));
+  xmlend(xmlresponse); 
+}
+void htmlmodificarestadoprogramaxml(){
+  //POST= ID:ID,ESTADO:ESTADO
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "USER="+String(readChar(BOTSDIR))+"&ID="+String(args2[0])+"&ESTADO="+String(args2[1])+"";
+  char xmlresponse[150]; strcpy(xmlresponse, phprequest("/modificarestadoprograma.php",data));
+  Serial.println(F("Estado Programa: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+////////////////////////////////MQTTSETUP//////////////////////////////////////////////////////////////////////////
+////////////////////////////////MQTTSETUP//////////////////////////////////////////////////////////////////////////
+extern char SERVER[50]; extern char TOPIC[50]; extern char PASSWORD[50]; extern String USERNAME; extern int SERVERPORT;
+void mqttsetup(){
+  char data[50];strcpy(data,"mqttuser=");strcat(data,readChar(BOTSDIR));
+  String * args2 = plainsubstring(phprequest("/mqttuser.php",data));
+  args2[0].toCharArray(SERVER, 50); Serial.println("SERVER: " + String(SERVER));
+  SERVERPORT = args2[1].toInt(); Serial.println("SERVERPORT: " + String(SERVERPORT));
+  USERNAME = args2[3]; Serial.println("USERNAME: " + String(USERNAME));
+  args2[4].toCharArray(PASSWORD, 50); Serial.println("PASSWORD: " + String(PASSWORD));
+  args2[5].toCharArray(TOPIC, 50); Serial.println("TOPIC: " + String(TOPIC));
+  mqttclientsetup();
+  estado=400;//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+}
+////////////////////////////////RECUPASSXML//////////////////////////////////////////////////////////////////////////
+////////////////////////////////RECUPASSXML//////////////////////////////////////////////////////////////////////////
+void recupassxml(){
+  //POST= user:user?email:email?
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "user="+String(args2[0])+"&email="+String(args2[1])+"";  
+  char xmlresponse[150]; strcpy(xmlresponse, phprequest("/recupass.php",data));
+  Serial.println(F("recupassxml: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+////////////////////////////////PASSWORDXML//////////////////////////////////////////////////////////////////////////
+////////////////////////////////PASSWORDXML//////////////////////////////////////////////////////////////////////////
+void passwordxml(){
+  //POST= oldpassword:oldpassword?newpassword1:newpassword1?newpassword2:newpassword2
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "USER="+String(readChar(BOTSDIR))+"&oldpassword="+String(args2[0])+"&newpassword1="+String(args2[1])+"&newpassword2="+String(args2[2])+"";
+  char xmlresponse[150]; strcpy(xmlresponse, phprequest("/changepassword.php",data));
+  if(strcmp(xmlresponse,"Contraseña Modificada Correctamente.")==0){strcpy(xmlresponse,"1");writeString(args2[1],BOTSDIR+DATA_OFFSET+strlen(readChar(BOTSDIR)));}
+  Serial.println(F("passwordxml: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+////////////////////////////////CLIENTESXML//////////////////////////////////////////////////////////////////////////
+////////////////////////////////CLIENTESXML//////////////////////////////////////////////////////////////////////////
+void htmlclientesxml() {
+  //VALUE1?VALUE2?VALUE3?
+  char data[50];strcpy(data,"USER=");strcat(data,readChar(BOTSDIR));
+  char xmlresponse[200]; strcpy(xmlresponse, phprequest("/clientes.php",data));
+  xmlend(xmlresponse);
+}
+////////////////////////////////BOTSLOGINXML//////////////////////////////////////////////////////////////////////////
+////////////////////////////////BOTSLOGINXML//////////////////////////////////////////////////////////////////////////
+void botsloginxml() {
+  //POST=BOTSUSER:BOTSUSER?BOTSPASS:BOTSPASS?
+  String * args2 = plainsubstring(server.arg("plain"));
+  String data = "user="+String(args2[0])+"&pass="+String(args2[1])+"";
+  char xmlresponse[200]; strcpy(xmlresponse, phprequest("/login.php",data));
+  if(strcmp(xmlresponse,"1")==0){
+    writeString(args2[0],BOTSDIR);
+    writeString(args2[1],BOTSDIR+DATA_OFFSET+args2[0].length());
+    estado=200;//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+    mqttsetup();
+    Serial.println(F("Credenciales guardadas en EEPROM."));
+  }
+  Serial.println(F("botsloginxml: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+////////////////////////////////WIFICONNECT//////////////////////////////////////////////////////////////////////////
+////////////////////////////////WIFICONNECT//////////////////////////////////////////////////////////////////////////
+char * WiFiConnect(String STAssid, String STApassword) {
+  char response[50];
+  byte contconexion = 0;
+  WiFi.begin(STAssid, STApassword);
+  while (WiFi.status() != WL_CONNECTED && contconexion < 20) {contconexion++;delay(500);Serial.print(".");}
+  Serial.print("STA IP: "); Serial.println(WiFi.localIP());
+  if (WiFi.status() == WL_CONNECTED) {
+    writeString(STAssid, WIFIDIR);
+    writeString(STApassword, WIFIDIR + STAssid.length() + DATA_OFFSET);
+    char eepromssid[30]; strcpy(eepromssid, readChar(WIFIDIR));
+    byte WIFIPASS = WIFIDIR + strlen(eepromssid) + DATA_OFFSET;
+    char eeprompass[30]; strcpy(eeprompass, readChar(WIFIPASS));
+    Serial.println(F("EEPROM GUARDADO--> SSID: " + String(eepromssid) + " / PASS: " + String(eeprompass)));
+    strcpy(response, "1");
+  }else{strcpy(response, "Error de conexion");}
+  return response;
+}
+////////////////////////////////WIFICONFIGXML//////////////////////////////////////////////////////////////////////////
+void wificonfigxml(){
+  WiFi.disconnect(true);
+  //POST=STAssid:STAssid?STApassword:STApassword?;
+  String * args2 = plainsubstring(server.arg("plain"));
+  Serial.print(F("SSID: ")); Serial.print(F(args2[0])); Serial.print(F(" / PASS: ")); Serial.println(F(args2[1]));
+  char xmlresponse[50]; strcpy(xmlresponse, WiFiConnect(args2[0], args2[1]));
+  if (xmlresponse == "1") {estado=100;}/*0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK*/
+  Serial.println(F("wificonfigxml: " + String(xmlresponse)));
+  xmlend(xmlresponse);
+}
+////////////////////////////////SERVERHANDLER//////////////////////////////////////////////////////////////////////////
+////////////////////////////////SERVERHANDLER//////////////////////////////////////////////////////////////////////////
+/* Go to http://192.168.4.1 in a web browser connected to this access point to see it.*/
+char LANDINGHEAD[] = "<html><head><meta charset='utf-8'/><meta name='format-detection' content='telephone=no'><meta name='msapplication-tap-highlight' content='no'><link rel='icon' href='data:,'><meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'><style>*{font-family:'Raleway', Helvetica, sans-serif;color:#fff;}body{background-color:#1E2832;text-align: center;display: inline-block !important;width: 100%;}#banner{padding:5em 2em 3em 2em;background-color:#1E2832;text-align:center;}h2{font-size:1.5em;padding:0;line-height:1.5em;}.actions{padding: 0;width:100%;max-width: 500px; display: inline-block;}input{border-radius: 4px;border-style: solid;border-width: 1px;display: block;outline: 0;padding: 0 1em;text-decoration: none;line-height: 2em;width: 100%;background-color: rgba(144, 144, 144, 0.075);border-color: rgba(144, 144, 144, 0.25);height: 3.5em;font-size: 12pt;font-weight: 400;} #estadowifi{text-align:center;margin:1em 0;}input[type='submit'].special{background-color: #51BAA4;transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;border-radius: 2.5em;border: 0;cursor: pointer;display: inline-block;font-weight: 700;height: 2.85em;line-height: 2.95em;font-size: 12pt;width: 49%;padding: 0 1.5em;text-align: center;text-decoration: none;text-transform: uppercase;white-space: nowrap;}input[type='reset'].alt{background-color: transparent;box-shadow: inset 0 0 0 2px #51BAA4;color: #51BAA4 !important;}input[type='reset']{background-color: #25383B;box-shadow: none;color: #fff !important;}input[type='reset']{width: 49%;-webkit-appearance: none;transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;border-radius: 2.5em;border: 0;cursor: pointer;display: inline-block;font-weight: 700;height: 2.85em;line-height: 2.95em;padding: 0 1.5em;text-align: center;text-decoration: none;text-transform: uppercase;white-space: nowrap;}</style><title>BOTS</title></head>";
+char LANDING[]="<body class='landing'><div id='banner'><h2 id='deviceready'>BOTS</h2><ul class='actions'><div class='app'><div class='event received' style='display: block;'><div id='loginmod'> <h5>CONFIGURACION WIFI</h5><div id='wificonfigform'><input style='display:none' name='action' value='login'/><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='STAssid' placeholder='SSID' type='text' /></div><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='STApassword' placeholder='PASSWORD' type='text' /></div><div id='result'></div><div class='actions' style='margin:2em 0;'><div><input style='min-width:49%' id='connect' type='submit' class='special' value='CONECTAR' /></div></div></div></div></div></div></ul></div></body>";
+char LOGIN[]="<body class='landing'><div id='banner'><h2 id='deviceready'>BOTS</h2><ul class='actions'><div class='app'><div class='event received' style='display: block;'><div id='loginmod'> <h5>INICIO DE SESION BOTS</h5><div id='botsloginform'><input style='display:none' name='action' value='login'/><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='BOTSUSER' placeholder='USER' type='text' /></div><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='BOTSPASS' placeholder='PASSWORD' type='text' /></div><div id='result'></div><div class='actions' style='margin:2em 0;'><div><input style='min-width:49%' id='login' type='submit' class='special' value='LOGIN!' /></div><div id='recuperarcontraseña' style='text-align:center;margin:1em 0;cursor:pointer'>¿Olvido su contraseña?</div></div></div><div id='recucontramod' style='display:none'><div>Ingrese E-mail para enviar contraseña de recupero</div><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='recuuser' placeholder='Usuario' type='text' /></div><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='mailrecu' placeholder='E-mail' type='email' /></div><div id='resultrecu'></div><div class='actions' style='margin:2em 0;'><div><input style='min-width:49%' id='cancelrecu' type='reset' class='alt' value='Cancel' /><input style='min-width:49%' id='recuperar' type='submit' class='special' value='Recuperar!' /></div></div></div></div></div></div></ul></div></body>";
+char SCRIPT[]="<script type='text/javascript'>document.addEventListener('click',function(e){switch (e.target && e.target.id) {case ('connect'):wificonfigxml();break;case ('login'):botsloginxml();break;case ('recuperarcontraseña'):recutoggle();break;case ('cancelrecu'):recutoggle();break;case ('recuperar'):recuperarxml();break;default:break;}});function recutoggle(){var x1 = document.getElementById('recucontramod');var x2 = document.getElementById('botsloginform');if (x1.style.display=='block') {x1.style.display=='none';x2.style.display=='block'}else (x1.style.display=='block';x2.style.display=='none')}function myajax(stringpost,url){var xmlHttp = new XMLHttpRequest();xmlHttp.onreadystatechange=function() {if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {var xmlDoc = xmlHttp.responseXML;return xmlDoc.getElementById('respxml').childNodes[0].nodeValue;}xmlHttp.open('POST',url,true);xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');xmlHttp.send(params);}function wificonfigxml(){document.getElementById('result').innerHTML = 'Ingresando...';var params ='STAssid:'+document.getElementById('STAssid').value+'?STApassword:'+document.getElementById('STApassword').value+'?';var message = myajax(params,'wificonfigxml');if (message=='1') {window.location.href = '/botslogin';}else{document.getElementById('result').innerHTML = message;}}function botsloginxml(){document.getElementById('result').innerHTML = 'Ingresando...';var params ='BOTSUSER:'+document.getElementById('BOTSUSER').value+'?BOTSPASS:'+document.getElementById('BOTSPASS').value+'?';var message = myajax(params,'botsloginxml');if (message=='1'){window.location.href = '/user';}else{document.getElementById('result').innerHTML = message;}}function recuperarxml(){if(document.getElementById('mailrecu').value!=''){if(document.getElementById('recuuser').value!=''){var params ='user:'+document.getElementById('recuuser').value+'?email:'+document.getElementById('mailrecu').value+'?';document.getElementById('resultrecu').innerHTML = myajax(params,'recupassxml');}else{document.getElementById('resultrecu').innerHTML='Complete Usuario';}}else{document.getElementById('resultrecu').innerHTML='Complete E-mail';}}</script></html>";
+char USER[]="<html><head><meta charset='utf-8'/><meta name='format-detection' content='telephone=no'><meta name='msapplication-tap-highlight' content='no'><link rel='icon' href='data:,'><meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'><style>*{font-family:'Raleway', Helvetica, sans-serif;color:#fff;}body{text-align: center;display: inline-block !important;width: 100%;margin: 0;}#header{height: 44px;line-height: 44px;background: #07090c;color: rgba(255, 255, 255, 0.75);cursor: default;text-align: right;width: 100%;}h1{left: 1em;color: #fff;display: inline-block;height: inherit;left: 1.25em;line-height: inherit;margin: 0;padding: 0;position: absolute;top: 0;text-decoration: none;font-size: 1em;}a{font-size: 1em;-moz-transition: color 0.2s ease-in-out;-webkit-transition: color 0.2s ease-in-out;-ms-transition: color 0.2s ease-in-out;transition: color 0.2s ease-in-out;color: #fff;display: inline-block;margin-right: 1.25em;text-decoration: none;}#header a[href='#nav'] {text-decoration: none;-webkit-tap-highlight-color: transparent;}#header a[href='#nav']:before {/*content: '';*/-moz-osx-font-smoothing: grayscale;-webkit-font-smoothing: antialiased;font-family: FontAwesome;font-style: normal;font-weight: normal;text-transform: none !important;}#header a[href='#nav']:before {margin: 0 0.5em 0 0;}#header a + a[href='#nav']:last-child {border-left: solid 1px transparent;padding-left: 1.25em;margin-left: 0.5em;}header.major h2 {font-size: 1.5em;}h2{color: #25383B;line-height: 1.5em;font-weight: 700;margin: 0 0 1em 0;text-transform: uppercase;}header.major p {font-size: 1em;}header h2 + p {font-size: 1.25em;margin-top: -1em;line-height: 1.85em;}header p {color: #25383B;margin: 0 0 1.5em 0;position: relative;text-transform: uppercase;}footer{position:absolute;bottom:0;text-decoration:none;width:100%;background-color:#1E2832;color:rgba(255, 255, 255, 0.75);text-align:center;}ul{list-style: none;padding-left: 1em;}ul li {padding-left: 0.5em;}#nav{transition: transform 0.5s ease, box-shadow 0.5s ease, visibility 0.5s;padding: 2.5em 1.75em;background: #07090c;color: #fff;height: 100%;max-width: 80%;overflow-y: auto;position: fixed;right: 0;text-transform: uppercase;top: 0;width: 20em;z-index: 10002;}#nav > ul.links {text-align: left;}#nav > ul {margin: 0 0 1em 0;}#nav > ul.links > li {padding: 0;}li {display: list-item;text-align: -webkit-match-parent;}#nav .close {height: 4em;line-height: 4em;text-decoration: none;transition: color 0.2s ease-in-out;border: 0;color: #a5a9ad;cursor: pointer;display: block;padding-right: 1.25em;position: absolute;right: 0;text-align: right;top: 0;vertical-align: middle;width: 7em;}#nav > ul.links > li > a:not(.button) {border: 0;border-top: solid 1px transparent;color: inherit;line-height: 3.5em;text-decoration: none;}#main{padding: 2em 0 0.1em 0;}.wrapper{position: relative;}.container{margin-left: auto;margin-right: auto;width: 90% !important;}header.major{margin-bottom: 2em;}#cerrarsesion{border: 0;background-color: #07090c;text-transform: uppercase;padding: 0;line-height: 3.5em;font-size: 1em;}.passinput{margin: 1em 0em;background-color: rgba(144, 144, 144, 0.075);border-color: rgba(144, 144, 144, 0.25);color: inherit;height: 3.5em;border-radius: 4px;border-style: solid;border-width: 1px;display: block;outline: 0;padding: 0 1em;text-decoration: none;width: 100%;}.alt{background-color: transparent;box-shadow: inset 0 0 0 2px #51BAA4;color: #51BAA4 !important;min-width: 45%;border: 0;transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;border-radius: 2.5em;cursor: pointer;display: inline-block;font-weight: 700;height: 2.85em;line-height: 2.95em;min-width: 10em;padding: 0 1.5em;text-align: center;text-decoration: none;text-transform: uppercase;white-space: nowrap;}#changepass{background-color: #51BAA4;box-shadow: none;color: #fff !important;border-radius: 2.5em;border: 0;cursor: pointer;display: inline-block;font-weight: 700;height: 2.85em;line-height: 2.95em;min-width: 10em;padding: 0 1.5em;text-align: center;text-decoration: none;text-transform: uppercase;white-space: nowrap;transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;}/*/////////////////////////SLIDER///////////////////////////////////////////////////////////////////////////////*/.switch{position: relative;display: inline-block;width: 60px;height: 34px;margin: 0 1em;}/* The switch - the box around the slider */.switch input{opacity: 0;width: 0;height: 0;display: none;}/* Hide default HTML checkbox */.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:.4s;transition:.4s;}/* The slider */.slider:before{position:absolute;content:'';height:26px;width:26px;left:4px;bottom:4px;background-color:white;-webkit-transition:.4s;transition:.4s;}input:checked + .slider{background-color: #2196F3;}input:focus + .slider {box-shadow: 0 0 1px #2196F3;}input:checked + .slider:before {-webkit-transform: translateX(26px);-ms-transform: translateX(26px);transform: translateX(26px);}.optioninput{}.slider.round {border-radius: 34px;}/* Rounded sliders */.slider.round:before {border-radius: 50%;}.option{display: inline-block;margin: 0 1em;height: 34px;line-height: 34px;vertical-align: top;}.estado{vertical-align:top;margin:0 1em;color: #25383B;}.xas{display: inline-block;height: auto;}.border{border:solid;border-width: 0 2px;}.inn{display: inline-block;width: 50%;cursor: pointer;font-size: 15px;padding: 0.5em;text-align: center;color: white;}.selected{border-bottom: solid 4px white;transition:border-width 0.1s linear 0.1s;}select{text-align-last:center;padding: 0;}label{width: 1em;height: 1em;padding: 0 1em;}.mytd{height: 3em;vertical-align: middle;padding: 0 0 0 1em;text-align: left;}.deleteop{height: 3em;vertical-align: middle;padding: 0 0 0 1em;}.modificacionprograma{padding:0 1em; margin: 1em 0;overflow: hidden; display: none;cursor:pointer;width:90%;color:#1e2832;height: 97%;border:solid;border-width: 0 2px;}#header{min-width: 200px !important;}.pli{padding: 0 !important;display: inline-block !important;width: 48% !important;}.pa{font-size: 70% !important;width: 70% !important;display: inline-block !important;}.trash:before{content: '\f1f8';-moz-osx-font-smoothing: grayscale;-webkit-font-smoothing: antialiased;font-family: FontAwesome;font-style: normal;font-weight: normal;text-transform: none !important;}</style><title>BOTS</title></head><body style='background-color: rgb(249, 252, 255);min-width:200px' ><header id='header' style='height: auto;min-width:200px ;'><div><a href='index.html' style='float: left;margin-left: 0.5em'>BOTS</a><a href='#nav'>Menu</a></div><div id='1' style='white-space: nowrap;line-height: normal;'><div id='dispositivostab' class='inn selected'>DISPOSITIVOS</div><div id='programastab' class='inn'>PROGRAMAS</div></div></header><nav id='nav' ><ul class='links'><li><a id='passwordbutton' style='cursor:pointer'>Cambiar Contraseña</a></li><li><a id='cerrarsesion' style='cursor:pointer'>Cerrar Sesión</a></li></ul><div id='passwordsurvey' style='display:none'><div><input  style='display:none' name='action' value='changepassword'/><div class='12u$(xsmall)'><input style='margin: 1em 0em' id='oldpassword' name='oldpassword' placeholder='Contraseña Antigua' type='password' /></div><div class='12u$(xsmall)'><input  style='margin: 1em 0em' id='newpassword1' name='newpassword1' placeholder='Nueva Contraseña' type='password' /></div><div class='12u$(xsmall)'><input  style='margin: 1em 0em' id='newpassword2' name='newpassword2' placeholder='Confirmar Contraseña' type='password' /></div></div><div id='result'></div><div style='margin-top:1em' class='actions'><div><input  style='min-width:45%;max-width: 49%;' id='cancel' type='reset' class='alt' value='Cancelar' /><input  style='min-width:45%;max-width: 49%;' id='changepass' type='submit' class='special' value='Cambiar!' /></div></div></div></nav><div  id='main' class='wrapper' style='position: absolute; padding: 0em;text-align: center;width: 100%;left:50%;transform:translateX(-50%);'><div id='CLIENTESCONTAINER' class='container' style='width:100% !important;padding:1em;'><div id='deviceready' class='major special'><h2>BIENVENIDO!!!</h2><div id='clientescont' class='table-wrapper' style='overflow-y: auto;'><table><tbody id='clientes'></tbody></table></div></div></div><div id='PROGRAMASCONTAINER' style='display: none;width:100% !important:padding:1em;' class='container'><div id='programas' style='display: inline-block;width: 100%;height: 100%;'><div style='width:100%;display:inline-block;text-align: right;'><div id='addprogram' style='display: inline-block;margin: 0 1em;cursor: pointer;'>&#10010;</div><i id='trash' class='trash'></i></div><div id='payload1' style='display: none;'></div><div id='tablaprogramas' class='table-wrapper' style='overflow-y: auto;'><table><tbody id='programasclientes'></tbody></table></div><div id='eliminarprogramas' style='position: absolute;width: 90%;display: table-cell;bottom: 5px;display: none;cursor: pointer;'><i style='font-size: 2em' class='trash'></i><div style='font-size: 1em'>Eliminar</div></div></div></div><div id='modificacionprograma' class='modificacionprograma'><h3 id='editarprogramatitulo' style='text-align: left;margin:0; '>Modificar Programa</h3><div id='programid'><div style='margin:2% 0%;width: 100%;align-items: center;'><div class='12u$(xsmall)'><input  id='nombreprogramaedit' type='text' placeholder='Nombre Programa' style='height: auto;' /></div></div><div class='12u$(xsmall)' style='margin:3% 0' id='programdays'><ul class='actions fit small' style='margin-bottom: 0px;'><li><a style='min-width: unset;cursor: pointer;' id='D1' class='button special fit small disabled'>L</a></li><li><a style='min-width: unset;cursor: pointer;' id='D2' class='button special fit small disabled'>M</a></li><li><a style='min-width: unset;cursor: pointer;' id='D3' class='button special fit small disabled'>M</a></li><li><a style='min-width: unset;cursor: pointer;' id='D4' class='button special fit small disabled'>J</a></li><li><a style='min-width: unset;cursor: pointer;' id='D5' class='button special fit small disabled'>V</a></li><li><a style='min-width: unset;cursor: pointer;' id='D6' class='button special fit small disabled'>S</a></li><li><a style='min-width: unset;cursor: pointer;' id='D7' class='button special fit small disabled'>D</a></li></ul></div><div class='12u$' style='margin:2% 0 2% 0;text-align: left;white-space:nowrap;display: inline-block;' id='programhorarios'><div class='6u$' style='display: inline-block;white-space:nowrap'>Hora Inicio: </div><div class='6u$' style='display: inline-block;white-space:nowrap;text-align:right;'><div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'><select class='xas' name='category' id='HORAINICIO'><option value='HH'>HH &#9660;</option></select></div><b>:</b><div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'><select  class='xas' name='category' id='MINUTOINICIO'><option value='MM'>MM &#9660;</option></select></div></div></div><div id='HMF' class='12u$' style='margin:0% 0 2% 0;text-align: left;white-space:nowrap;display: inline-block;'><div class='6u$' style='display: inline-block;white-space:nowrap'>Hora Fin: </div><div class='6u$' style='display: inline-block;white-space:nowrap;text-align:right;'><div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'><select  class='xas' name='category' id='HORAFIN'><option value='HH'>HH &#9660;</option></select></div><b>:</b><div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'><select  class='xas' name='category' id='MINUTOFIN'><option value='MM'>MM &#9660;</option></select></div></div></div><div id='tabladevices' class='table-wrapper' style='overflow-y: scroll;padding-right: 0;overflow-x:hidden;'><table><tbody id='devicesprogram'></tbody></table></div><div class='12u$(xsmall)' style='padding:0 1em;white-space:nowrap; position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;' id='programbutton'><ul class='actions fit small' style='margin:1% 0 1% 0;max-width: 425px;width:98%; display: inline-block;'><li class='pli'><a id='canceledit' href='#' class='button fit small pa'>Cancelar</a></li><li class='pli'><a id='saveedit' href='#' class='button special fit small pa'>Guardar</a></li></ul></div></div></div></div><footer id='footerx' style='position:fixed;height: 35px;' ><div class='inner' style='padding: 0'><ul class='copyright' style='margin: 0'><li>&copy; BOTS.</li></ul></div></footer> </body><!-- Scripts -->      <script type='text/javascript'>for (var i = 0; i <= 60; i++) {var line =`<option value='`+i+`'>`+i+`</option>`;if (i<=24) {document.getElementById('HORAINICIO').innerHTML+=line;document.getElementById('HORAFIN').innerHTML+=line;}document.getElementById('MINUTOINICIO').innerHTML+=line;document.getElementById('MINUTOFIN').innerHTML+=line;}document.addEventListener('click',function(e){switch (e.target && e.target.id) {case ('menu'):document.getElementById('nav').style.display='block';break;case ('main'):document.getElementById('nav').style.display='none';break;case ('closenav'):document.getElementById('nav').style.display='none';break;case ('passwordbutton'):document.getElementById('passwordsurvey').style.display='inline-block';break;case ('cancel'):document.getElementById('passwordsurvey').style.display='none';break;case ('changepass'):passwordxml();break;case ('dispositivostab'):dispositivos(1);break;case ('programastab'):dispositivos(0);break;case ('agregarprograma'):programeditshow(0);break;case ('canceledit'):programeditshow(0);break;case ('addprogram'):programeditshow(0);break;case ('eliminarprogramas'):eliminarprogramas();break;case ('saveedit'):nuevoprograma();break;case ('trash'):delmenu();break;default:break;}for (var i = 0; i <= max; i++) {if(e.target && e.target.id== ('nombreprograma'+i)){programeditshow(i);}if(e.target && e.target.id== ('check'+i)){check(i);}if(e.target && e.target.id== ('programaestado'+i)){modificarestadonprograma(i);}}for (var i = 1; i <= 7; i++) {if(e.target && e.target.id== ('D'+i)){selectday('D'+i);}}});function selectday(a){var x = document.getElementById(a);x.value=!x.value;if (x.value==false){x.className = 'button special fit small disabled';}if (x.value==true){x.className = 'button special fit small';}}function delmenu() {var cols = document.getElementsByClassName('deleteop');var y = document.getElementById('eliminarprogramas');for(i = 0; i < cols.length; i++) {if (cols[i].style.display=='none'){cols[i].style.display='table-cell';y.style.display='table-cell';}else{cols[i].style.display='none';y.style.display='none';}}}function dispositivos(s){document.getElementById('PROGRAMASCONTAINER').className = 'container';document.getElementById('programas').style.display='inline-block';document.getElementById('modificacionprograma').style.display = 'none';document.getElementById('eliminarprogramas').style.display='none';document.getElementById('main').className = 'wrapper';if(s==1){document.getElementById('dispositivostab').className = 'inn selected';document.getElementById('programastab').className = 'inn';document.getElementById('CLIENTESCONTAINER').style.display = 'block';document.getElementById('PROGRAMASCONTAINER').style.display = 'none';}else if (s==0) {document.getElementById('dispositivostab').className = 'inn';document.getElementById('programastab').className = 'inn selected';document.getElementById('CLIENTESCONTAINER').style.display = 'none';document.getElementById('PROGRAMASCONTAINER').style.display = 'block';var cols = document.getElementsByClassName('deleteop');for(i = 0; i < cols.length; i++) {cols[i].style.display='none';}for (var i = 0; i < programasres.length; i++) {var u= document.getElementById('programaestado'+programasres[i][0]);if (programasres[i][2]==1) {u.checked=true;} else if(programasres[i][2]==0) {u.checked=false;}}}}function programeditshow(ID){if (ID==0) {document.getElementById('programid').value='0';document.getElementById('editarprogramatitulo').innerHTML='NUEVO PROGRAMA';document.getElementById('nombreprogramaedit').value='';for (var i = 1; i <= 7; i++) {var x=document.getElementById('D'+i);x.value=false;x.className='button special fit small disabled';}document.getElementById('HORAINICIO').value='HH';document.getElementById('MINUTOINICIO').value='MM';document.getElementById('HORAFIN').value='HH';document.getElementById('MINUTOFIN').value='MM';for (var i = 0; i < res.length; i++) {document.getElementById('devicesprogram'+res[i][0]).checked=false;}}else{document.getElementById('editarprogramatitulo').innerHTML='MODIFICAR PROGRAMA';for (var i = 0; i < programasres.length; i++) {if(programasres[i][0]==ID){document.getElementById('programid').value=programasres[i][0];document.getElementById('nombreprogramaedit').value=programasres[i][1];var days = programasres[i][3].split('D');for (var d = 0; d <= days.length-1; d++) {if(days[d]!='D' && days[d]!=''){selectday('D'+days[d]);}}var inicio = programasres[i][4].split(':');document.getElementById('HORAINICIO').value=inicio[0];document.getElementById('MINUTOINICIO').value=inicio[1];var fin = programasres[i][5].split(':');document.getElementById('HORAFIN').value=fin[0];document.getElementById('MINUTOFIN').value=fin[1];var dev =programasres[i][6].split('%');for (var v = 0; v < dev.length; v++) {if(dev[v]!='%' && dev[v]!=''){document.getElementById('devicesprogram'+dev[v]).checked=true;}}}}}var x = document.getElementById('programas');var y = document.getElementById('modificacionprograma');if (x.style.display === 'none') {x.style.display = 'inline-block';y.style.display='none';document.getElementById('main').className = 'wrapper';}else {x.style.display = 'none';y.style.display = 'inline-block';document.getElementById('main').className = 'wrapper border';}document.getElementById('tabladevices').style.height=(((document.getElementById('programbutton').getBoundingClientRect().top)-(document.getElementById('HMF').getBoundingClientRect().bottom)*0.95)+'px';}function check(idx){if (document.getElementById('check'+idx).checked === true){send(idx+'I');}else{send(idx+'O');}}function myajax(stringpost,url){var xmlHttp = new XMLHttpRequest();xmlHttp.onreadystatechange=function() {if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {var xmlDoc = xmlHttp.responseXML;return xmlDoc.getElementById('respxml').childNodes[0].nodeValue;}xmlHttp.open('POST',url,true);xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');xmlHttp.send(params);}function passwordxml(){var params ='oldpassword:'+document.getElementById('oldpassword').value+'?newpassword1:'+document.getElementById('newpassword1').value+'?newpassword2:'+document.getElementById('newpassword2').value+'?';var message = myajax(params,'passwordxml');var rdiv =document.getElementById('result');if (message==1) {rdiv.innerHTML='Contraseña Modificada Correctamente.';}else{rdiv.innerHTML=message;}}function receive(){var message = myajax('','htmlreceivexml');var a = message;var estado = a.substring(a.length - 1, a.length);var id = a.substring(0, a.length-1);document.getElementById('estado'+id).innerHTML=estado;if(estado=='I'){document.getElementById('check'+id).checked = true;setTimeout(receive,500);}if(estado=='O'){document.getElementById('check'+id).checked = false;setTimeout(receive,500);}}function eliminarprogramas(){var progamaeliminar='?';for (var i = 0; i < programasres.length; i++) {if(document.getElementById('del'+programasres[i][0]).checked==true){progamaeliminar+=programasres[i][0]+'?';}}var data={progamaeliminar:progamaeliminar};var message = myajax(data,'htmlprogamaeliminarxml')programasclientes();delmenu();}function modificarestadonprograma(u){var datapost = {ID:u,ESTADO:document.getElementById('programaestado'+u).checked};var message = myajax(datapost,'htmlmodificarestadoprogramaxml');programasclientes();}function send(dato){var params='strtopic:'+dato+'?';var message = myajax(params,'htmlsendxml');}var max=0;var res = [];function mqtt(){res=[];var message = myajax('','htmlclientesxml');var cdiv =document.getElementById('clientes');cdiv.innerHTML='';var progx = response.split('$');if (progx.length>1) {for (var i = 0; i < progx.length-1; i++) {res[i] = progx[i].split('?');if (res[i][0]>max) {max=res[i][0];}cdiv.innerHTML+=`<tr><td class='option'>`+res[i][1]+`</td><td style='text-align: right;'><label id='label`+res[i][0]+`' class='switch'><input id='check`+res[i][0]+`' type='checkbox' class='optioninput'><span class='slider round'></span></label><span id='estado`+res[i][0]+`' class='estado'></span></td></tr>`;}}else{document.getElementById('programasclientes').innerHTML+=`<tr style='cursor:pointer'><td id='nodev' class='mytd'>NO DEVS</td></tr>`;}programasclientes();}var programasres=[];function programasclientes(){programasres=[];var pc =document.getElementById('programasclientes'); var dp =document.getElementById('devicesprogram');var message = myajax('','htmlprogramasclientesxml');pc.innerHTML='';dp.innerHTML='';var progx = response.split('$');if (progx.length>1) {for (var i = 0; i < progx.length-1; i++) {programasres[i] = progx[i].split('?');if (programasres[i][0]>max) {max=programasres[i][0];}pc.innerHTML+=`<tr id='programa`+programasres[i][0]+`' style='cursor:pointer;'><td class='deleteop mytd' id='deleteprogram`+programasres[i][0]+`' style='display: none;'><input type='checkbox' id='del`+programasres[i][0]+`' checked data-toggle='toggle'><label for='del`+programasres[i][0]+`'></label></div></td><td class='mytd' id='nombreprograma`+programasres[i][0]+`' style='width: 100%;'>`+programasres[i][1]+`</td><td class='mytd' style='text-align: right;width: 25%'><label class='switch' style='display:block'><input type='checkbox' id='programaestado`+programasres[i][0]+`' class='optioninput'><span class='slider round'></span></label></td></tr>`;}for (var i = 0; i < programasres.length; i++) {var u= document.getElementById('programaestado'+programasres[i][0]);if (programasres[i][2]==1) {u.checked=true;} else if(programasres[i][2]==0) {u.checked=false;}}}else{pc.innerHTML+=`<tr style='cursor:pointer'><td id='agregarprograma' class='mytd'>+ Agregar programa</td></tr>`;}for (var j = 0; j < res.length; j++) {dp.innerHTML+=`<tr><td class='mytd'>`+res[j][1]+`</td><td class='mytd' style='text-align: right;'><input type='checkbox' id='devicesprogram`+res[j][0]+`'><label for='devicesprogram`+res[j][0]+`'></label></td></tr>`;}setTimeout(receive,1000);}mqtt();function nuevoprograma(){var programid = document.getElementById('programid').value;var nombreprograma = document.getElementById('nombreprogramaedit').value;if (nombreprograma!='') {var days='';for (var i = 1; i <= 7; i++) {var x=document.getElementById('D'+i);if(x.value==true){days+='D'+i;}}if (days!='') {var horainicio = document.getElementById('HORAINICIO').value+':'+document.getElementById('MINUTOINICIO').value;if (document.getElementById('HORAINICIO').value!='HH' && document.getElementById('MINUTOINICIO').value!='MM') {var horafin = document.getElementById('HORAFIN').value+':'+document.getElementById('MINUTOFIN').value;if (document.getElementById('HORAFIN').value!='HH' && document.getElementById('MINUTOFIN').value!='MM') {var devi = '%';for (var i = 0; i < res.length; i++) {if(document.getElementById('devicesprogram'+res[i][0]).checked==true){devi+=res[i][0]+'%';}}if (devi!='%') {var user= document.getElementById('botsuser').value;var sta =true;if (programid!=0) {sta=document.getElementById('programaestado'+programid).checked;}var datapost={estado:sta,programid:programid,nombreprograma:nombreprograma,days:days,horainicio:horainicio,horafin:horafin,devi:devi};var message = myajax(datapost,'htmlnuevoprogramaxml');programasclientes();programeditshow(0);}else{console.log('DISPOSITIVOS NO SELECCIONADOS');}}else{console.log('HORA FIN INCORRECTA');}}else{console.log('HORA INICIO INCORRECTA');}}else{console.log('SIN DIAS SELECCIONADOS');}}else{console.log('INGRESE NOMBRE DE PROGRAMA');}}var HeaderHeight = document.getElementById('header').getBoundingClientRect().height;var footerHeight = document.getElementById('footerx').getBoundingClientRect().height;var mainHeight = document.body.clientHeight-HeaderHeight-footerHeight;var m = document.getElementById('main');m.style.top=HeaderHeight+'px';m.style.bottom=footerHeight+'px';</script></html>";
+
+void botslogin(){
+  char wpage[]="";
+  strcpy(wpage, LANDINGHEAD);
+  strcat(wpage, LANDING);
+  strcat(wpage, SCRIPT);
+  server.send(200, "text/html", wpage);
+}
+void user(){server.send(200, "text/html", USER);}
+void landingpage(){
+  char wpage[]="";
+  strcpy(wpage, LANDINGHEAD);
+  strcat(wpage, LOGIN);
+  strcat(wpage, SCRIPT);
+  server.send(200, "text/html", wpage);
+}
+void landing(){//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+  switch (estado){
+    case 0: {landingpage();break;}
+    case 100: {botslogin();break;}
+    case 200: {user();break;}
+    case 300: {user();break;}
+    case 400: {user();break;}
+    default: {landingpage();break;}
+  }
+}
+////////////////////////////////SESSIONOUT//////////////////////////////////////////////////////////////////////////
+void sessionout() {
+  estado=100;//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+  landing();
+}
+////////////////////////////////WIFICONFIG//////////////////////////////////////////////////////////////////////////
+void wificonfig(){
+  char APssid[25]; strcpy(APssid, "BOTS-");
+  char APpassword[20];
+  WiFi.macAddress().toCharArray(APpassword, WiFi.macAddress().length() + 1);
+  strcat(APssid, APpassword);
+  WiFi.disconnect(true);
+  ESP.eraseConfig();
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.softAP(APssid, APpassword);
+  IPAddress myIP = WiFi.softAPIP();
+  /*HTML*/
+  server.on("/", landing); 
+  server.on("/botslogin", botslogin); 
+  server.on("/user", user); 
+  server.on("/sessionout", sessionout);
+  /*XML*/
+  server.on("/wificonfigxml", wificonfigxml);
+  server.on("/botsloginxml", botsloginxml);
+  server.on("/htmlclientesxml", htmlclientesxml);
+  server.on("/htmlsendxml", htmlsendxml); 
+  server.on("/htmlprogamaeliminarxml", htmlprogamaeliminarxml); 
+  server.on("/htmlnuevoprogramaxml", htmlnuevoprogramaxml); 
+  server.on("/htmlmodificarestadoprogramaxml", htmlmodificarestadoprogramaxml); 
+  server.on("/htmlreceivexml", htmlreceivexml);
+  server.on("/recupassxml", recupassxml);
+  server.on("/passwordxml", passwordxml);
+  server.begin();
+  Serial.print(F("AP CONFIG --> SSID: " + String(APssid) + " / PASS: " + String(APpassword)));
+  Serial.print("AP IP: "); Serial.println(myIP);
+}
+////////////////////////////////RESTARTCONFIG//////////////////////////////////////////////////////////////////////////
+void restartconfig() { /*REINICIAR ARDUINO CON CONFIGURACIONES DE EEPROM*/
+  if (EEPROMr.read(WIFIDIR + DATA_OFFSET) != 255 && EEPROMr.read(WIFIDIR + DATA_OFFSET) != 0) {
+    char eepromssid[30]; strcpy(eepromssid, readChar(WIFIDIR));
+    byte WIFIPASS = WIFIDIR + strlen(eepromssid) + DATA_OFFSET;
+    char eeprompass[30]; strcpy(eeprompass, readChar(WIFIPASS));
+    Serial.println("EEPROM GET--> SSID: " + String(eepromssid) + " / PASS: " + String(eeprompass));
+    String temp = WiFiConnect(eepromssid, eeprompass);
+    if (temp == "1") {
+      estado=100;//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+      Serial.println("wificonfig: " + String(temp));
+      if (EEPROMr.read(BOTSDIR + DATA_OFFSET) != 255 && EEPROMr.read(BOTSDIR + DATA_OFFSET) != 0) {
+        char eeprombotsuser[30]; strcpy(eeprombotsuser, readChar(BOTSDIR));
+        byte BOTSPASS = BOTSDIR + strlen(eeprombotsuser) + DATA_OFFSET;
+        char eeprombotspassword[30]; strcpy(eeprombotspassword, readChar(BOTSPASS));
+        Serial.println("EEPROM BOTS-->USER: " +String(eeprombotsuser) + " / PASS: " +String(eeprombotspassword));
+        temp = phprequest("/login.php","user="+String(eeprombotsuser)+"&pass="+String(eeprombotspassword)+"");
+        if (temp == "1") {
+          Serial.println("botslogin: " + String(temp));
+          estado=200;//0:UNSET-100:WIFIOK-200:BOTSLOGINOK-300:CLIENTEOK-400:MQTTSETUPOK
+          mqttsetup();
+        }
+      }
+    }else{Serial.println("Configuracion WIFI EEPROM Fallada. Reiniciando Red AP...");wificonfig();}
+  }else{Serial.println("EEPROM sin registro de Inicio. Continuar por AP...");}
+}
+////////////////////////////////WIFISETUP//////////////////////////////////////////////////////////////////////////
+void wifisetup(){wificonfig();restartconfig();}
+////////////////////////////////WIFILOOP//////////////////////////////////////////////////////////////////////////
+void wifiloop(){server.handleClient();}
