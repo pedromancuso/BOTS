@@ -1,180 +1,230 @@
-<html style='color:#777;'>
-	<head>
-		<meta charset='utf-8'/>
-		<meta name='format-detection' content='telephone=no'>
-		<meta name='msapplication-tap-highlight' content='no'>
-		<link rel='icon' href='data:,'>
-		<meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'>
-		<title>BOTS</title>
-		<link rel='stylesheet' type='text/css' href='botsstyle.css'>
-	</head>
-	<body class='userbody'><div id='webuser' style='display: none'></div>
-		<header id='header'>
-			<div><a style='float: left;margin-left: 0.5em'>BOTS</a><a id='menu'>&#9776; Menu</a></div>
-			<div id='1' style='white-space: nowrap;line-height: normal;'>
-				<div id='dispositivostab' class='inn selected'>DISPOSITIVOS</div>
-				<div id='programastab' class='inn'>PROGRAMAS</div>
-			</div>
-		</header>
-		<nav id='nav' style='display: none;'>
-			<ul class='links'>
-				<li><a id='passwordbutton' style='cursor:pointer'>Cambiar Contraseña</a></li>
-				<li><a id='cerrarsesion' style='cursor:pointer'>Cerrar Sesión</a></li>
-			</ul>
-			<div id='passwordsurvey' style='display:none'>
+	<html style='color:#777;'>
+		<head>
+			<meta charset='utf-8'/>
+			<meta name='format-detection' content='telephone=no'>
+			<meta name='msapplication-tap-highlight' content='no'>
+			<link rel='icon' href='data:,'>
+			<meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'>
+			<title>BOTS</title>
+			<link rel='stylesheet' type='text/css' href='botsstyle2.css'>
+		</head>
+		<body class='userbody'><div id='webuser' style='display: none'></div>
+			<header id='header'>
 				<div>
-					<input  style='display:none' name='action' value='changepassword'/>
-					<div class='12u$(xsmall)'>
-						<input class='marg' id='oldpassword' name='oldpassword' placeholder='Contraseña Antigua' type='password' />
-					</div>
-					<div class='12u$(xsmall)'>
-						<input class='marg' id='newpassword1' name='newpassword1' placeholder='Nueva Contraseña' type='password' />
-					</div>
-					<div class='12u$(xsmall)'>
-						<input class='marg' id='newpassword2' name='newpassword2' placeholder='Confirmar Contraseña' type='password' />
-					</div>
+					<a style='float: left;margin-left: 0.5em'>BOTS</a>
+					<a id='menu'>&#9776; Menu</a>
 				</div>
-				<div id='result'></div>
-				<div style='margin-top:1em' class='actions'>
-					<div>
-						<input id='cancel' type='reset' class='alt' value='Cancelar' />
-						<input id='changepass' type='submit' class='special' value='Cambiar!' />
-					</div>
+				<div class='tab'>
+					<div id='dispositivostab' class='inn selected'>DISPOSITIVOS</div>
+					<div id='programastab' class='inn'>PROGRAMAS</div>
 				</div>
-			</div>		
-			<a id='closenav' class='close' style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);'>&#10006;</a>
-		</nav>
-		<div  id='main' class='wrapper' style='position: absolute; padding: 0em;text-align: center;width: 100%;left:50%;transform:translateX(-50%);'>
-			<div id='CLIENTESCONTAINER' class='container' style='padding:1em;'>
-				<div id='deviceready' class='major'>
-					<h2>BIENVENIDO!!!</h2>
-					<div id='clientescont' class='table-wrapper' style='overflow-y: auto;'>
-						<table><tbody id='clientes'>
-							<!--prueba-->
-							<tr>
-								<td class='mytd' style='width:100%;'>PORTON</td>
-								<td style='text-align: right;width:25%;'>
-									<label class='switch' id='label1' style='display:block'>
-										<input type='checkbox' id='check1' class='optioninput'>
-										<span class='slider round'></span>
-									</label>
-								</td>
-								<td id='estado1' class='estado'>O</td>
-							</tr>
-							<!--prueba-->
-							<tr><td class='mytd' style='width:100%;'>CALEFACCION</td><td clas='mytd' style='text-align: right;width:25%;'><label class='switch' id='label4' style='display:block'><input type='checkbox' id='check4' class='optioninput'><span class='slider round'></span></label></td><td id='estado4' class='estado'></td></tr>
-							<!--prueba-->
-						</tbody></table>				
+			</header>
+			<nav id='nav' style='display:none;'>
+				<ul >
+					<li ><a id='passwordbutton'>Cambiar Contraseña</a></li>
+					<div id='passwordsurvey' style='width:100%;display:none'>
+						<div>
+							<input class='inputland' style='display:none' name='action' value='changepassword'/>
+							<div>
+								<input class='inputland marg' id='oldpassword' name='oldpassword' placeholder='Contraseña Antigua' type='password' />
+							</div>
+							<div>
+								<input class='inputland marg' id='newpassword1' name='newpassword1' placeholder='Nueva Contraseña' type='password' />
+							</div>
+							<div>
+								<input class='inputland marg' id='newpassword2' name='newpassword2' placeholder='Confirmar Contraseña' type='password' />
+							</div>
+						</div>
+						<div id='result'></div>
+						<div class='actions marg2' style="text-align: center;">
+							<div class='col-2'>
+								<input id='cancel' type='reset' class='alt doble' value='Cancel' />
+							</div>
+							<div class='col-2'>
+								<input id='changepass' type='submit' class='special doble' value='Enviar!' />
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div id='PROGRAMASCONTAINER' style='display: none;width:100% !important:padding:1em;' class='container'>
-				<div id='programas' style='display: inline-block;width: 100%;height: 100%;'>
-					<div style='width:100%;display:inline-block;text-align: right;'>
-						<div id='addprogram' style='display: inline-block;margin: 0 1em;cursor: pointer;'>&#10010;</div>
-						<i id='trash' class='trash'></i>
-					</div>
-					<div id='payload1' style='display: none;'></div>
-					<div id='tablaprogramas' class='table-wrapper' style='overflow-y: auto;'>
-						<table>
-							<tbody id='programasclientes'>
-								<!--prueba-->
-								<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
-									<td class='deleteop mytd' id='deleteprogram+programasres[i][0]+' style='display: none;'>
-										<input type='checkbox' id='del+programasres[i][0]+' checked data-toggle='toggle'>
-										<label for='del+programasres[i][0]+'></label>
-									</td>
-									<td class='mytd' id='nombreprograma+programasres[i][0]+' style='width: 100%;'>programasres[i][1]</td>
-									<td class='mytd' style='text-align: right;width: 25%'>
-										<label class='switch' style='display:block'>
-											<input type='checkbox' id='programaestado+programasres[i][0]+' class='optioninput'>
-											<span class='slider round'></span>
+					<li><a id='cerrarsesion'>Cerrar Sesión</a></li>
+				</ul>
+				<a id='closenav' class='close' style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);'>&#10006;</a>
+			</nav>
+			<div  id='main' class='wrapper'>
+				<div id='CLIENTESCONTAINER' class='container' style='padding:1em;'>
+					<div id='deviceready' class='major'>
+						<h2>BIENVENIDO!!!</h2>
+						<div id='clientescont' class='table-wrapper' style='overflow-y: auto;'>
+							<table><tbody id='clientes'>
+								<!--prueba: eliminar cuando mande a produccion-->
+								<tr>
+									<td class='mytd'>PORTON</td>
+									<td class='mytd right'>
+										<label class='switch' id='label1'>
+											<input type='checkbox' id='check1' class='optioninput'>
+											<div class='sliderround'></div>
 										</label>
 									</td>
-								</tr>	
-								<!--prueba-->
-								<!--prueba-->
-								<tr id='programa+programasres[i][1]+' style='cursor:pointer;'>
-									<td class='deleteop mytd' id='deleteprogram+programasres[i][1]+' style='display: none;'>
-										<input type='checkbox' id='del+programasres[i][1]+' checked data-toggle='toggle'>
-										<label for='del+programasres[i][0]+'></label>
-									</td>
-									<td class='mytd' id='nombreprograma+programasres[i][1]+' style='width: 100%;'>programasres[i][2]</td>
-									<td class='mytd' style='text-align: right;width: 25%'>
-										<label class='switch' style='display:block'>
-											<input type='checkbox' id='programaestado+programasres[i][1]+' class='optioninput'>
-											<span class='slider round'></span>
+								</tr>
+								<!--prueba: eliminar cuando mande a produccion-->
+							</tbody></table>				
+						</div>
+					</div>
+				</div>
+				<div id='PROGRAMASCONTAINER' style='display: none;width:100% !important:padding:1em;' class='container'>
+					<div id='programas' style='display: inline-block;width: 100%;height: 100%;'>
+						<div style='width:100%;display:inline-block;text-align: right;'>
+							<div id='addprogram' style='display: inline-block;margin: 0 1em;cursor: pointer;'>&#10010;</div>
+							<i id='trash' class='trash'></i>
+						</div>
+						<div id='payload1' style='display: none;'></div>
+						<div id='tablaprogramas' class='table-wrapper' style='overflow-y: auto;'>
+							<table>
+								<tbody id='programasclientes'>
+									<!--prueba: eliminar cuando mande a produccion-->
+	
+	
+<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
+	<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
+	<td class='mytd right'>
+		<label class='switch' id='2'>
+			<input type='checkbox' id='p1'>
+			<div class='sliderround'></div>
+		</label>
+		<label class='deleteop switch' style='display: none;' id='1'>
+			<input type='checkbox' id='d1'>
+			<div class='square'></div>
+		</label>
+	</td>
+</tr>
+<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
+	<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
+	<td class='mytd right'>
+		<label class='switch' id='4'>
+			<input type='checkbox' id='p2'><!--programaestado+programasres[i][0]+-->
+			<div class='sliderround'></div>
+		</label>
+		<label class='deleteop switch' style='display: none;' id='3'>
+			<input type='checkbox' id='d2'><!--del+programasres[i][0]+-->
+			<div class='square'></div>
+		</label>
+	</td>
+</tr>
+
+									<!--prueba: eliminar cuando mande a produccion-->
+								</tbody>
+							</table>
+						</div>	
+						<div id='eliminarprogramas' style='position: absolute;width: 90%;display: table-cell;bottom: 5px;display: none;cursor: pointer;'>
+							<i style='font-size: 2em' class='trash'></i>
+							<div style='font-size: 1em'>Eliminar</div>
+						</div>
+					</div>
+				</div>
+				<div id='modificacionprograma' class='modificacionprograma'>
+					<h3 id='editarprogramatitulo' style='text-align: left;margin:0; '>Modificar Programa</h3>
+					<div id='programid'>
+						<div style='margin:2% 0%;width: 100%;align-items: center;'>
+							<div>
+								<input  class='inputland' id='nombreprogramaedit' type='text' placeholder='Nombre Programa' style='height: auto;' />
+							</div>
+						</div>
+						<div style='margin:2% 0' id='programdays'>
+							<ul class='actions daylist' style='margin-bottom: 0px;'>
+								<li><a id='D1' class='day special disabled'>L</a></li>
+								<li><a id='D2' class='day special disabled'>M</a></li>
+								<li><a id='D3' class='day special disabled'>M</a></li>
+								<li><a id='D4' class='day special disabled'>J</a></li>
+								<li><a id='D5' class='day special disabled'>V</a></li>
+								<li><a id='D6' class='day special disabled'>S</a></li>
+								<li><a id='D7' class='day special disabled'>D</a></li>
+							</ul>
+						</div>
+						<div style='margin:2% 0 2% 0;width:100%;display: inline-block;' id='programhorarios'>
+							<div class='time'>Hora Inicio: <input class='inputland hora' type='time' id='HORAINICIO'></div>
+							<div class='time'>Hora Fin: <input class='inputland hora' type='time' id='HORAFIN'></div>
+						</div>
+						<div id='titulotabla' style='margin: 2% 0 2% 0;text-align:left;border:solid lightgrey;padding:0 0 1% 0;border-width: 0 0 1px 0;'>DISPOSITIVOS</div>	
+						<div id='tabladevices' class='table-wrapper' style='overflow-y: scroll;padding-right: 0;overflow-x:hidden;'>
+							<table>
+								<tbody id='devicesprogram'>
+								<!--prueba: eliminar cuando mande a produccion-->
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='td1'><!--devicesprogram`+res[j][0]+`-->
+											<div class='square'></div>
 										</label>
 									</td>
-								</tr>	
-								<!--prueba-->
-							</tbody>
-						</table>
-					</div>	
-					<div id='eliminarprogramas' style='position: absolute;width: 90%;display: table-cell;bottom: 5px;display: none;cursor: pointer;'>
-						<i style='font-size: 2em' class='trash'></i>
-						<div style='font-size: 1em'>Eliminar</div>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='td2'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='td3'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='td4'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td class='mytd' >+res[j][1]+</td>	
+									<td class='mytd right'>
+										<label class='switch'>
+											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+											<div class='square'></div>
+										</label>
+									</td>
+								</tr>																																																
+								<!--prueba: eliminar cuando mande a produccion-->
+								</tbody>
+							</table>
+						</div>
+						<div class='actions editbutttons' id='programbutton'>
+							<div class='col-2'><input id='canceledit' class='alt' value='Cancelar' /></div>
+							<div class='col-2'><input id='saveedit' class='special' value='Guardar' /></div>
+						</div>						
 					</div>
 				</div>
 			</div>
-			<div id='modificacionprograma' class='modificacionprograma'>
-				<h3 id='editarprogramatitulo' style='text-align: left;margin:0; '>Modificar Programa</h3>
-				<div id='programid'>
-					<div style='margin:2% 0%;width: 100%;align-items: center;'>
-						<div class='12u$(xsmall)'>
-							<input  id='nombreprogramaedit' type='text' placeholder='Nombre Programa' style='height: auto;' />
-						</div>
-					</div>
-					<div class='12u$(xsmall)' style='margin:3% 0' id='programdays'>
-						<ul class='actions fit small' style='margin-bottom: 0px;'>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D1' class='button special fit small disabled'>L</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D2' class='button special fit small disabled'>M</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D3' class='button special fit small disabled'>M</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D4' class='button special fit small disabled'>J</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D5' class='button special fit small disabled'>V</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D6' class='button special fit small disabled'>S</a></li>
-							<li><a style='min-width: unset;width:15%;cursor: pointer;' id='D7' class='button special fit small disabled'>D</a></li>
-						</ul>
-					</div>
-					<div class='12u$' style='margin:2% 0 2% 0;text-align: left;white-space:nowrap;display: inline-block;' id='programhorarios'>
-						<div class='6u$' style='display: inline-block;white-space:nowrap'>Hora Inicio: </div>
-						<div class='6u$' style='display: inline-block;white-space:nowrap;text-align:right;'>
-							<div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'>
-								<select class='xas' name='category' id='HORAINICIO'><option value='HH'>HH &#9660;</option></select>
-							</div>
-							<b>:</b>
-							<div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'>
-								<select  class='xas' name='category' id='MINUTOINICIO'><option value='MM'>MM &#9660;</option></select>
-							</div>
-						</div>
-					</div>
-					<div id='HMF' class='12u$' style='margin:0% 0 2% 0;text-align: left;white-space:nowrap;display: inline-block;'>
-						<div class='6u$' style='display: inline-block;white-space:nowrap'>Hora Fin: </div>
-						<div class='6u$' style='display: inline-block;white-space:nowrap;text-align:right;'>
-							<div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'>
-								<select  class='xas' name='category' id='HORAFIN'><option value='HH'>HH &#9660;</option></select>
-							</div>
-							<b>:</b>
-							<div class='5u$' style='white-space: nowrap;display: inline-block;max-width: 100px;'>
-								<select  class='xas' name='category' id='MINUTOFIN'><option value='MM'>MM &#9660;</option></select>
-							</div>
-						</div>
-					</div>
-					<div id='tabladevices' class='table-wrapper' style='overflow-y: scroll;padding-right: 0;overflow-x:hidden;'>
-						<table><tbody id='devicesprogram'></tbody></table>
-					</div>
-					<div class='12u$(xsmall)' style='padding:0 1em;white-space:nowrap; position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;' id='programbutton'>
-						<ul class='actions fit small' style='margin:1% 0 1% 0;max-width: 425px;width:98%; display: inline-block;'>
-							<li class='pli'><a id='canceledit' href='#' class='button fit small pa'>Cancelar</a></li>
-							<li class='pli'><a id='saveedit' href='#' class='button special fit small pa'>Guardar</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<footer id='footerx' style='position:fixed;height: 35px;' >
-			<div class='inner' style='padding: 0'><ul class='copyright' style='margin: 0'><li>&copy; BOTS.</li></ul></div>
-		</footer> 
-	</body>
-	<script type='text/javascript' src='botsjs.js'></script>
-</html>
+			<footer id='footeruser' style='position:fixed;height: 35px;' >
+				<div class='inner' style='padding: 0'><ul class='copyright' style='margin: 0'><li>&copy; BOTS.</li></ul></div>
+			</footer> 
+		</body>
+		<script type='text/javascript' src='botsjs.js'></script>
+	</html>
