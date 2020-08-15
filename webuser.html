@@ -1,60 +1,57 @@
-	<html style='color:#777;'>
-		<head>
-			<meta charset='utf-8'/>
-			<meta name='format-detection' content='telephone=no'>
-			<meta name='msapplication-tap-highlight' content='no'>
-			<link rel='icon' href='data:,'>
-			<meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'>
-			<title>BOTS</title>
-			<link rel='stylesheet' type='text/css' href='botsstyle2.css'>
-		</head>
-		<body class='userbody'><div id='webuser' style='display: none'></div>
-			<header id='header'>
-				<div>
-					<a style='float: left;margin-left: 0.5em'>BOTS</a>
-					<a id='menu'>&#9776; Menu</a>
-				</div>
-				<div class='tab'>
-					<div id='dispositivostab' class='inn selected'>DISPOSITIVOS</div>
-					<div id='programastab' class='inn'>PROGRAMAS</div>
-				</div>
-			</header>
-			<nav id='nav' style='display:none;'>
-				<ul >
-					<li ><a id='passwordbutton'>Cambiar Contraseña</a></li>
-					<div id='passwordsurvey' style='width:100%;display:none'>
+<html style='color:#777;'>
+	<head>
+		<meta charset='utf-8'/>
+		<meta name='format-detection' content='telephone=no'>
+		<meta name='msapplication-tap-highlight' content='no'>
+		<link rel='icon' href='data:,'>
+		<meta name='viewport' content='initial-scale=1,width=device-width,viewport-fit=cover'>
+		<title>BOTS</title>
+		<link rel='stylesheet' type='text/css' href='botsstyle.css'>
+	</head>
+	<body class='userbody'><div id='webuser' style='display:none'></div>
+		<header id='header'>
+			<div>
+				<a id='logo'>BOTS</a>
+				<a id='menu'>&#9776; Menu</a>
+			</div>
+			<div id='tab'>
+				<div id='dispositivostab' class='inn selected'>DISPOSITIVOS</div>
+				<div id='programastab' class='inn'>PROGRAMAS</div>
+			</div>
+		</header>
+		<nav id='nav' style='display:none;'>
+			<ul>
+				<li><a id='passwordbutton'>Cambiar Contraseña</a></li>
+				<div id='passwordsurvey' style='display:none'>
+					<div>
+						<input class='inputland' style='display:none' value='changepassword'/>
 						<div>
-							<input class='inputland' style='display:none' name='action' value='changepassword'/>
-							<div>
-								<input class='inputland marg' id='oldpassword' name='oldpassword' placeholder='Contraseña Antigua' type='password' />
-							</div>
-							<div>
-								<input class='inputland marg' id='newpassword1' name='newpassword1' placeholder='Nueva Contraseña' type='password' />
-							</div>
-							<div>
-								<input class='inputland marg' id='newpassword2' name='newpassword2' placeholder='Confirmar Contraseña' type='password' />
-							</div>
+							<input class='inputland marg' id='oldpassword' placeholder='Contraseña Antigua' type='password'/>
 						</div>
-						<div id='result'></div>
-						<div class='actions marg2' style="text-align: center;">
-							<div class='col-2'>
-								<input id='cancel' type='reset' class='alt doble' value='Cancel' />
-							</div>
-							<div class='col-2'>
-								<input id='changepass' type='submit' class='special doble' value='Enviar!' />
-							</div>
+						<div>
+							<input class='inputland marg' id='newpassword1' placeholder='Nueva Contraseña' type='password'/>
+						</div>
+						<div>
+							<input class='inputland marg' id='newpassword2' placeholder='Confirmar Contraseña' type='password'/>
 						</div>
 					</div>
-					<li><a id='cerrarsesion'>Cerrar Sesión</a></li>
-				</ul>
-				<a id='closenav' class='close' style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);'>&#10006;</a>
-			</nav>
-			<div  id='main' class='wrapper'>
-				<div id='CLIENTESCONTAINER' class='container' style='padding:1em;'>
-					<div id='deviceready' class='major'>
-						<h2>BIENVENIDO!!!</h2>
-						<div id='clientescont' class='table-wrapper' style='overflow-y: auto;'>
-							<table><tbody id='clientes'>
+					<div id='result'></div>
+					<div class='actions marg' style="text-align:center;">
+						<div class='col-2'><input id='cancel' type='reset' class='alt' value='Cancel'/></div>
+						<div class='col-2'><input id='changepass' type='submit' class='special' value='Enviar!'/></div>
+					</div>
+				</div>
+				<li><a id='cerrarsesion'>Cerrar Sesión</a></li>
+			</ul>
+			<a id='closenav'>&#10006;</a>
+		</nav>
+		<div id='main' class='wrapper'>
+			<div id='CLIENTESCONTAINER' class='container'>
+				<div id='deviceready'>
+					<!--h2>BIENVENIDO!!!</h2-->
+					<div id='clientescont' class='table-wrapper'>
+						<table>
+							<tbody id='clientes'>
 								<!--prueba: eliminar cuando mande a produccion-->
 								<tr>
 									<td class='mytd'>PORTON</td>
@@ -66,165 +63,159 @@
 									</td>
 								</tr>
 								<!--prueba: eliminar cuando mande a produccion-->
-							</tbody></table>				
-						</div>
-					</div>
-				</div>
-				<div id='PROGRAMASCONTAINER' style='display: none;width:100% !important:padding:1em;' class='container'>
-					<div id='programas' style='display: inline-block;width: 100%;height: 100%;'>
-						<div style='width:100%;display:inline-block;text-align: right;'>
-							<div id='addprogram' style='display: inline-block;margin: 0 1em;cursor: pointer;'>&#10010;</div>
-							<i id='trash' class='trash'></i>
-						</div>
-						<div id='payload1' style='display: none;'></div>
-						<div id='tablaprogramas' class='table-wrapper' style='overflow-y: auto;'>
-							<table>
-								<tbody id='programasclientes'>
-									<!--prueba: eliminar cuando mande a produccion-->
-	
-	
-<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
-	<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
-	<td class='mytd right'>
-		<label class='switch' id='2'>
-			<input type='checkbox' id='p1'>
-			<div class='sliderround'></div>
-		</label>
-		<label class='deleteop switch' style='display: none;' id='1'>
-			<input type='checkbox' id='d1'>
-			<div class='square'></div>
-		</label>
-	</td>
-</tr>
-<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
-	<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
-	<td class='mytd right'>
-		<label class='switch' id='4'>
-			<input type='checkbox' id='p2'><!--programaestado+programasres[i][0]+-->
-			<div class='sliderround'></div>
-		</label>
-		<label class='deleteop switch' style='display: none;' id='3'>
-			<input type='checkbox' id='d2'><!--del+programasres[i][0]+-->
-			<div class='square'></div>
-		</label>
-	</td>
-</tr>
-
-									<!--prueba: eliminar cuando mande a produccion-->
-								</tbody>
-							</table>
-						</div>	
-						<div id='eliminarprogramas' style='position: absolute;width: 90%;display: table-cell;bottom: 5px;display: none;cursor: pointer;'>
-							<i style='font-size: 2em' class='trash'></i>
-							<div style='font-size: 1em'>Eliminar</div>
-						</div>
-					</div>
-				</div>
-				<div id='modificacionprograma' class='modificacionprograma'>
-					<h3 id='editarprogramatitulo' style='text-align: left;margin:0; '>Modificar Programa</h3>
-					<div id='programid'>
-						<div style='margin:2% 0%;width: 100%;align-items: center;'>
-							<div>
-								<input  class='inputland' id='nombreprogramaedit' type='text' placeholder='Nombre Programa' style='height: auto;' />
-							</div>
-						</div>
-						<div style='margin:2% 0' id='programdays'>
-							<ul class='actions daylist' style='margin-bottom: 0px;'>
-								<li><a id='D1' class='day special disabled'>L</a></li>
-								<li><a id='D2' class='day special disabled'>M</a></li>
-								<li><a id='D3' class='day special disabled'>M</a></li>
-								<li><a id='D4' class='day special disabled'>J</a></li>
-								<li><a id='D5' class='day special disabled'>V</a></li>
-								<li><a id='D6' class='day special disabled'>S</a></li>
-								<li><a id='D7' class='day special disabled'>D</a></li>
-							</ul>
-						</div>
-						<div style='margin:2% 0 2% 0;width:100%;display: inline-block;' id='programhorarios'>
-							<div class='time'>Hora Inicio: <input class='inputland hora' type='time' id='HORAINICIO'></div>
-							<div class='time'>Hora Fin: <input class='inputland hora' type='time' id='HORAFIN'></div>
-						</div>
-						<div id='titulotabla' style='margin: 2% 0 2% 0;text-align:left;border:solid lightgrey;padding:0 0 1% 0;border-width: 0 0 1px 0;'>DISPOSITIVOS</div>	
-						<div id='tabladevices' class='table-wrapper' style='overflow-y: scroll;padding-right: 0;overflow-x:hidden;'>
-							<table>
-								<tbody id='devicesprogram'>
-								<!--prueba: eliminar cuando mande a produccion-->
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='td1'><!--devicesprogram`+res[j][0]+`-->
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='td2'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='td3'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='td4'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class='mytd' >+res[j][1]+</td>	
-									<td class='mytd right'>
-										<label class='switch'>
-											<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
-											<div class='square'></div>
-										</label>
-									</td>
-								</tr>																																																
-								<!--prueba: eliminar cuando mande a produccion-->
-								</tbody>
-							</table>
-						</div>
-						<div class='actions editbutttons' id='programbutton'>
-							<div class='col-2'><input id='canceledit' class='alt' value='Cancelar' /></div>
-							<div class='col-2'><input id='saveedit' class='special' value='Guardar' /></div>
-						</div>						
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-			<footer id='footeruser' style='position:fixed;height: 35px;' >
-				<div class='inner' style='padding: 0'><ul class='copyright' style='margin: 0'><li>&copy; BOTS.</li></ul></div>
-			</footer> 
-		</body>
-		<script type='text/javascript' src='botsjs.js'></script>
-	</html>
+			<div id='PROGRAMASCONTAINER' style='display: none;' class='container'>
+				<div id='programas'>
+					<div id='programasbar'>
+						<div id='addprogram'>&#10010;</div>
+						<i id='trash' class='trash'></i>
+					</div>
+					<div id='payload1' style='display: none;'></div>
+					<div id='tablaprogramas' class='table-wrapper'>
+						<table>
+							<tbody id='programasclientes'>
+								<!--prueba: eliminar cuando mande a produccion-->
+								<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
+								<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
+								<td class='mytd right'>
+									<label class='switch' id='2'>
+										<input type='checkbox' id='p1'>
+										<div class='sliderround'></div>
+									</label>
+									<label class='deleteop switch' style='display: none;' id='1'>
+										<input type='checkbox' id='d1'>
+										<div class='square'></div>
+									</label>
+								</td>
+								</tr>
+								<tr id='programa+programasres[i][0]+' style='cursor:pointer;'>
+								<td class='mytd' id='nombreprograma+programasres[i][0]+'>programasres[i][1]</td>	
+								<td class='mytd right'>
+									<label class='switch' id='4'>
+										<input type='checkbox' id='p2'><!--programaestado+programasres[i][0]+-->
+										<div class='sliderround'></div>
+									</label>
+									<label class='deleteop switch' style='display: none;' id='3'>
+										<input type='checkbox' id='d2'><!--del+programasres[i][0]+-->
+										<div class='square'></div>
+									</label>
+								</td>
+								</tr>
+								<!--prueba: eliminar cuando mande a produccion-->
+							</tbody>
+						</table>
+					</div>	
+					<div id='eliminarprogramas'>
+						<i id='trashbig' class='trash'></i>
+						<div id='eliminar'>Eliminar</div>
+					</div>
+				</div>
+			</div>
+			<div id='modificacionprograma'>
+				<h3 id='editarprogramatitulo'>Modificar Programa</h3>
+				<div id='programid'>
+					<div class='marg'>
+						<input class='inputland' id='nombreprogramaedit' type='text' placeholder='Nombre Programa'/>
+					</div>
+					<div id='programdays'>
+						<ul class='actions daylist'>
+							<li><a id='D1' class='day special disabled'>L</a></li>
+							<li><a id='D2' class='day special disabled'>M</a></li>
+							<li><a id='D3' class='day special disabled'>M</a></li>
+							<li><a id='D4' class='day special disabled'>J</a></li>
+							<li><a id='D5' class='day special disabled'>V</a></li>
+							<li><a id='D6' class='day special disabled'>S</a></li>
+							<li><a id='D7' class='day special disabled'>D</a></li>
+						</ul>
+					</div>
+					<div id='programhorarios'>
+						<div class='time'>Hora Inicio: <input class='inputland hora' type='time' id='HORAINICIO'></div>
+						<div class='time'>Hora Fin: <input class='inputland hora' type='time' id='HORAFIN'></div>
+					</div>
+					<div id='titulotabla'>DISPOSITIVOS</div>	
+					<div id='tabladevices' class='table-wrapper'>
+						<table>
+							<tbody id='devicesprogram'>
+							<!--prueba: eliminar cuando mande a produccion-->
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='td1'><!--devicesprogram`+res[j][0]+`-->
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='td2'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='td3'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='td4'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td class='mytd' >+res[j][1]+</td>	
+								<td class='mytd right'>
+									<label class='switch'>
+										<input type='checkbox' id='devicesprogram`+res[j][0]+`'>
+										<div class='square'></div>
+									</label>
+								</td>
+							</tr>																																																
+							<!--prueba: eliminar cuando mande a produccion-->
+							</tbody>
+						</table>
+					</div>
+					<div class='actions editbutttons' id='programbutton'>
+						<div class='col-2'><input id='canceledit' class='alt' value='Cancelar' /></div>
+						<div class='col-2'><input id='saveedit' class='special' value='Guardar' /></div>
+					</div>						
+				</div>
+			</div>
+		</div>
+		<footer id='footeruser'><ul><li>&copy; BOTS.</li></ul></footer> 
+	</body>
+	<script type='text/javascript' src='botsjs.js'></script>
+</html>
