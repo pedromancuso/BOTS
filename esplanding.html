@@ -1,0 +1,68 @@
+<html>
+	<head>
+		<meta charset='utf-8'/>
+		<meta name='format-detection' content='telephone=no'>
+		<meta name='msapplication-tap-highlight' content='no'>
+		<link rel='icon' href='data:,'>
+		<meta name='viewport' content='initial-scale=1, width=device-width, viewport-fit=cover'>
+		<title>BOTS</title>
+		<link rel='stylesheet' type='text/css' href='botsstyle.css'>
+	</head>
+	<body class='bodylanding'>
+		<div id='weblanding' style='display: none'></div>
+		<div id='banner'>
+			<!--img src='./img/logo.png' style='width: 125px'-->
+			<h2 id='deviceready'>BOTS</h2>
+			<ul class='actions'>
+				<div class='app'>
+					<!--div class='event listening' id='listening' style='display: none;''><h2>Conectando a Dispositivo....</h2></div-->
+					<div class='event received'>
+						<div id='loginmod'> 
+							<h5 class='title' id='cfgWiFi'>CONFIGURACION WIFI &#8964;</h5>
+							<div id='cfgWiFi1'>
+								<input class='inputland' style='display:none' value='login'/>
+								<div><input class='inputland marg' id='WiFiUSER' placeholder='SSID' type='text'/></div>
+								<div><input class='inputland marg' id='WiFiPASS' placeholder='PASSWORD' type='pass'/></div>
+								<div id='WiFires'></div>
+								<div class='actions marg2'>
+									<div><input id='WiFi' type='submit' class='sp' value='CONECTAR'/></div>
+								</div>
+							</div>
+							<h5 class='title' id='cfgBOTS'>INICIO DE SESION BOTS &#8964;</h5>
+							<div id='cfgBOTS1' style='display: none;'>
+								<input class='inputland' style='display:none' value='login'/>
+								<div><input class='inputland marg' id='BOTSUSER' placeholder='USER' type='text'/></div>
+								<div><input class='inputland marg' id='BOTSPASS' placeholder='PASSWORD' type='pass'/></div>
+								<div id='BOTSres'></div>
+								<div class='actions marg2'>
+									<div><input id='BOTS' type='submit' class='sp' value='LOGIN!'/></div>
+									<div id='recoverpass' class='marg'>¿Olvido su contraseña?</div>
+								</div>
+							</div>
+							<div id='recoverpass1' style='display:none'>
+								<div>Ingrese E-mail para enviar contraseña de recupero</div>
+								<div><input class='inputland marg' id='recuuser' placeholder='Usuario' type='text'/></div>
+								<div><input class='inputland marg' id='mailrecu' placeholder='E-mail' type='email'/></div>
+								<div id='resrecu'></div>
+								<div class='actions marg2'>
+									<div class='col-2'>
+										<input id='cancelrecu' type='reset' class='alt' value='Cancel'/>
+									</div>
+									<div class='col-2'>
+										<input id='recuperar' type='submit' class='sp' value='Enviar!'/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ul>
+		</div>
+	</body>
+	<!--script type='text/javascript' src='cordova.js'></script-->
+	<!--script type='text/javascript' src='js/skel.min.js'></script-->
+	<!--script type='text/javascript' src='js/main.js'></script-->
+	<!--script type='text/javascript' src='js/util.js'></script-->
+	<!--script type='text/javascript' src='js/botsjs.js'></script-->
+	<script type='text/javascript' src='botsjs.js'></script>
+</html>

@@ -1,0 +1,126 @@
+<html style='color:#777;'>
+	<head>
+		<meta charset='utf-8'/>
+		<meta name='format-detection' content='telephone=no'>
+		<meta name='msapplication-tap-highlight' content='no'>
+		<link rel='icon' href='data:,'>
+		<meta name='viewport' content='initial-scale=1,width=device-width,viewport-fit=cover'>
+		<title>BOTS</title>
+		<link rel='stylesheet' type='text/css' href='botsstyle.css'>
+	</head>
+	<body class='userbody'><div id='webuser' style='display:none'></div>
+		<div  id='botsuser' style='display:none' value='' ></div>
+		<header id='header'>
+			<div id='deviceready' class='logo'>
+				<a id='logo'>BOTS</a>
+				<a id='menu'>&#9776; Menu</a>
+			</div>
+			<div id='tab'>
+				<div id='devtab' class='inn selected'>DISPOSITIVOS</div>
+				<div id='prgtab' class='inn'>PROGRAMAS</div>
+			</div>
+		</header>
+		<nav id='botsnav' style='display:none;'>
+			<ul>
+				<li><a id='pass'>Cambiar Contraseña</a></li>
+				<div id='pass1' style='display:none'>
+					<div>
+						<input class='inputland' style='display:none' value='changepass'/>
+						<div>
+							<input class='inputland marg' id='oldpass' placeholder='Contraseña Antigua' type='pass'/>
+						</div>
+						<div>
+							<input class='inputland marg' id='newpass1' placeholder='Nueva Contraseña' type='pass'/>
+						</div>
+						<div>
+							<input class='inputland marg' id='newpass2' placeholder='Confirmar Contraseña' type='pass'/>
+						</div>
+					</div>
+					<div id='res'></div>
+					<div class='actions marg' style='text-align:center;'>
+						<div class='col-2'><button id='cancel' class='alt'/>Cancel</div>
+						<div class='col-2'><button id='changepass' class='sp'/>Enviar!</div>
+					</div>
+				</div>
+				<li><a id='end'>Cerrar Sesión</a></li>
+			</ul>
+			<a id='closenav'>&#10006;</a>
+		</nav>
+		<div class='wrap' id='loader'>
+			<div id='loader2'>
+				<div  class='wrap loader'></div>
+			</div>
+			<div id='loader3'>Cargando...</div>
+		</div>
+		<div id='main' class='wrap' style='display: none;'>
+			<div id='clicont' class='cont'>
+				<div id='deviceready'>
+					<div id='clicont' class='table-wrap'>
+						<table>
+							<tbody id='cli'></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div id='prgcont' style='display: none;' class='cont'>
+				<div id='prg'>
+					<div id='prgbar'>
+						<div id='addprg'>&#10010;</div>
+						<i id='trash' class='trash'>&#x2717;</i>
+					</div>
+					<div id='payload1' style='display: none;'></div>
+					<div id='tablaprg' class='table-wrap'>
+						<table>
+							<tbody id='prgcli'></tbody>
+						</table>
+					</div>	
+					<div id='delprg'>
+						<i id='trashbig' class='trash'>&#x2717;</i>
+						<div id='del'>Eliminar</div>
+					</div>
+				</div>
+			</div>
+			<div id='editprg'>
+				<h3 id='editprgtitle'>Modificar Programa</h3>
+				<div id='prgid'>
+					<div class='marg'>
+						<input class='inputland' id='nprgedit' type='text' placeholder='Nombre Programa'/>
+					</div>
+					<div id='prgdays'>
+						<ul class='actions daylist'>
+							<li><a id='D1' class='day sp off'>L</a></li>
+							<li><a id='D2' class='day sp off'>M</a></li>
+							<li><a id='D3' class='day sp off'>M</a></li>
+							<li><a id='D4' class='day sp off'>J</a></li>
+							<li><a id='D5' class='day sp off'>V</a></li>
+							<li><a id='D6' class='day sp off'>S</a></li>
+							<li><a id='D7' class='day sp off'>D</a></li>
+						</ul>
+					</div>
+					<div id='prgHH'>
+						<div class='time'>Hora Inicio: <input class='inputland HH' type='time' id='HHINICIO'></div>
+						<div class='time'>Hora Fin: <input class='inputland HH' type='time' id='HHFIN'></div>
+					</div>
+					<div id='titletabla'>DISPOSITIVOS</div>	
+					<div id='tabladev' class='table-wrap'>
+						<table>
+							<tbody id='devprg'></tbody>
+						</table>
+					</div>
+					<div class='actions editbutttons' id='prgbutton'>
+						<div class='col-2'><button id='canceledit' class='alt'/>Cancelar</div>
+						<div class='col-2'><button id='saveedit' class='sp'/>Guardar</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer id='footeruser'><ul><li>&copy; BOTS.</li></ul></footer> 
+	</body>
+	<!--script src='assets/js/mqttws31.js' type='text/javascript'></script>
+	<script type='text/javascript' src='cordova.js'></script>
+	<script type='text/javascript' src='js/skel.min.js'></script>
+	<script type='text/javascript' src='js/util.js'></script>
+	<script type='text/javascript' src='js/main.js'></script>
+	<script type='text/javascript' src='js/bots.js'></script-->
+	<script type='text/javascript' src='botsjs.js'></script>
+</html>
