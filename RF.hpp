@@ -6,14 +6,14 @@ static const uint8_t D2 = 4;
 RCSwitch RFDev = RCSwitch();
 RCSwitch RFRecep = RCSwitch();
 void RFSetup(){
-  RFDev.enableTransmit(D2);
-  RFDev.setProtocol(6);
-  RFDev.setPulseLength(533);
-  RFDev.setRepeatTransmit(15);
+  RFDev.setProtocol(6);RFDev.setRepeatTransmit(15);RFDev.enableTransmit(D2);
   RFRecep.enableReceive(D5);
   Serial.println("EMISOR RF D2 / Receptor RF D5"); 
 }
+unsigned long previousMillis= 0;
 int RecepRF(){
+  unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= 1000){previousMillis = currentMillis;
     if (RFRecep.available()){
       int value = RFRecep.getReceivedValue();   
       if (value == 0) {Serial.print("Unknown encoding");}
@@ -27,18 +27,21 @@ int RecepRF(){
       }
       RFRecep.resetAvailable();
     }
+  }
   return 1;
-} 
+}
 int EmisRF(String code){
   digitalWrite(LED_BUILTIN,HIGH);
   Serial.print("EmisionRF: ");Serial.println(code);
-  delay(400);
-  RFDev.send("1000100000000110010000100101");
-  delay(2000);
+  RFDev.setPulseLength(274);
+  /*RFDev.send("1101011111111001000111111000");*/
+  delay(1500);
+  RFDev.setPulseLength(533);
+  /*RFDev.send("1000100000000110010000100101");*/
+  delay(1500);
   digitalWrite(LED_BUILTIN,LOW);
   return 1;
 }
-
 
 static char * dec2binWzerofill(unsigned long Dec, unsigned int bitLength){
   static char bin[64];unsigned int i=0;

@@ -1,7 +1,7 @@
 #define DATA_OFFSET 10
 EEPROM_Rotate EEPROMr;
 ////////////////////////////////EEPROMSETUP//////////////////////////////////////////////////////////////////////////
-void eepromsetup(){EEPROMr.size(4);EEPROMr.begin(512);Serial.println("EEPROM INICIADA 512 Kb");}
+void eepromsetup(){EEPROMr.size(4);EEPROMr.begin(512);Serial.println("EEPROM STARTED 512 Kb");}
 ////////////////////////////////WRITESTRING//////////////////////////////////////////////////////////////////////////
 void writeString(String str, int pos){
   for (int i=0; i<str.length(); i++){int s = str[i];EEPROMr.write(i+pos+DATA_OFFSET, s);}
