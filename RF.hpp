@@ -11,19 +11,18 @@ void RFSetup(){
   RFDev.setPulseLength(533);
   RFDev.setRepeatTransmit(15);
   RFRecep.enableReceive(D5);
-  Serial.println("EMISOR RF D2 / Receptor RF D5"); 
 }
 int RecepRF(){
     if (RFRecep.available()){
       int value = RFRecep.getReceivedValue();   
-      if (value == 0) {Serial.print("Unknown encoding");}
+      if (value == 0) {Serial.print(F("Unknown encoding"));}
       else{
-        Serial.print("Codigo RF: ");Serial.print(RFRecep.getReceivedValue());
-        Serial.print(" / ");Serial.print(RFRecep.getReceivedBitlength());Serial.print("bit ");
-        Serial.print("Protocol: ");Serial.print(RFRecep.getReceivedProtocol());
-        Serial.print(" / PulseLength: ");Serial.println(RFRecep.getReceivedDelay());
+        Serial.print(F("Codigo RF: "));Serial.print(RFRecep.getReceivedValue());
+        Serial.print(F(" / "));Serial.print(RFRecep.getReceivedBitlength());Serial.print(F("bit "));
+        Serial.print(F("Protocol: "));Serial.print(RFRecep.getReceivedProtocol());
+        Serial.print(F(" / PulseLength: "));Serial.println(RFRecep.getReceivedDelay());
         const char* b = dec2binWzerofill(RFRecep.getReceivedValue(), RFRecep.getReceivedBitlength());
-        Serial.print("Binary: ");Serial.println(b);
+        Serial.print(F("Binary: "));Serial.println(b);
       }
       RFRecep.resetAvailable();
     }
@@ -31,7 +30,7 @@ int RecepRF(){
 } 
 int EmisRF(String code){
   digitalWrite(LED_BUILTIN,HIGH);
-  Serial.print("EmisionRF: ");Serial.println(code);
+  Serial.print(F("EmisionRF: "));Serial.println(code);
   delay(400);
   RFDev.send("1000100000000110010000100101");
   delay(2000);

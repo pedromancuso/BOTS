@@ -8,12 +8,12 @@ int SERVERPORT;
 ////////////////////////////////RECONNECT//////////////////////////////////////////////////////////////////////////
 ////////////////////////////////RECONNECT//////////////////////////////////////////////////////////////////////////
 void reconnect() {
-  int retries = 0;
+  byte retries = 0;
   if(!client.connected() && retries <2){
     Serial.print("Intentando conexion MQTT...");
     /*String clientId = "ESP8266Client-"+String(random(0xffff), HEX);*/
     USERNAME.toCharArray(PLACA,USERNAME.length()+1);
-    if(client.connect("",PLACA,PASSWORD)){Serial.println("Conectado");client.subscribe(TOPIC);}/*/////////////////SUSCRIBE*/
+    if(client.connect("",PLACA,PASSWORD)){Serial.println(F("Conectado"));client.subscribe(TOPIC);}/*/////////////////SUSCRIBE*/
     else{Serial.println("Fallo, rc=" + String(client.state())+" Intenta nuevamente en 3 segundos");delay(3000);}
     retries++;
   }
@@ -28,7 +28,7 @@ String mqttpublish(String strtopic){
 }
 ////////////////////////////////ORDENADOR//////////////////////////////////////////////////////////////////////////
 ////////////////////////////////ORDENADOR//////////////////////////////////////////////////////////////////////////
-int RFReceive;
+byte RFReceive;
 void ordenador(){  
   if(strcmp(MQTTCALLBACK, "1I")==0){char RFCode[50];strcpy(RFCode,"0100111000110001000000011000");if(EmisRF(RFCode)){mqttpublish("1O");}}
   if(strcmp(MQTTCALLBACK, "1O")==0){RFReceive=1;}
