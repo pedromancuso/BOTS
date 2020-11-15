@@ -1,8 +1,7 @@
 #include <RCSwitch.h>
 static char * dec2binWzerofill(unsigned long Dec, unsigned int bitLength);
-static const uint8_t D5 = 14;
-static const uint8_t D2 = 4;
-
+/*static const uint8_t D5 = 14;*/
+/*static const uint8_t D2 = 4;*/
 RCSwitch RFDev = RCSwitch();
 RCSwitch RFRecep = RCSwitch();
 void RFSetup(){
@@ -38,7 +37,6 @@ int EmisRF(String code){
   digitalWrite(LED_BUILTIN,LOW);
   return 1;
 }
-
 
 static char * dec2binWzerofill(unsigned long Dec, unsigned int bitLength){
   static char bin[64];unsigned int i=0;
