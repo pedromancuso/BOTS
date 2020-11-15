@@ -10,7 +10,7 @@ void writeString(String str, int pos){
 }
 ////////////////////////////////READCHAR//////////////////////////////////////////////////////////////////////////
 char * readChar(int pos){
-  char * data=new char[100];int len = 0;unsigned char k;
-  while(k != '\0' && len <= 100){k=char(EEPROMr.read(len+pos+DATA_OFFSET));data[len]=k;len++;}
+  char * data=new char[1000];int len = 0;unsigned char k;
+  while(k != '\0' && len <= 1000){k=char(EEPROMr.read(len+pos+DATA_OFFSET));data[len]=k;len++;}
   return data;
 }
